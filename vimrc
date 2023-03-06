@@ -1,6 +1,10 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+let api_root = "~/projects/"
+"cd
+execute "cd ".api_root
+
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -23,6 +27,14 @@ Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-syntastic/syntastic'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
+Plugin 'Tagbar'
+Plugin 'Rename'
+"Plugin 'dense-analysis/ale'
+
+" react
+Plugin 'mxw/vim-jsx'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mattn/emmet-vim'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -75,12 +87,16 @@ nnoremap <Leader>h :nohl<CR>
 
 " change to current file directory
 map <Leader>w :cd %:h<CR>
+execute "map <Leader>wa :cd ".api_root."<CR>"
 
 " Show hidden characters (spaces, tabs, etc)
 nmap <silent> <leader>s :set nolist!<CR>
 
 " Quick insert mode exit
 imap jj <Esc>
+
+" create tags
+map <Leader>. :!ctags -R --languages=python,javascript -f ./.git/tags `pwd`<CR>
 
 " Save a file that requires sudoing even when
 " you opened it as a normal user.
@@ -89,7 +105,7 @@ command! Sw w !sudo tee % > /dev/null
 " nerdtree配置
 nnoremap <Leader>n :NERDTreeToggle<CR>
 nnoremap <Leader>r :TagbarToggle<CR>
-let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+let NERDTreeIgnore=['\.pyc$', '\~$', '__pycache__$'] "ignore files in NERDTree
 let g:NERDTreeMapHelp = "h"
 
 " Fugitive shortcuts
@@ -114,12 +130,47 @@ let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 let g:SuperTabDefaultCompletionType = '<C-n>'
 
+"jsx
+let g:jsx_ext_required = 0
+let g:user_emmet_leader_key='<C-e>'
+let g:user_emmet_settings = {
+  \ 'javascript.jsx' : {
+    \    'extends' : 'jsx',
+    \ },
+  \}
+
 " ag
 if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 
-let python_highlight_all=1
-syntax on
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
+let g:syntastic_python_checkers = ["flake8"]
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_mode_map = {
+            \ "mode": "active",
+            \ "active_filetypes": [],
+            \ "passive_filetypes": ["python"] }
+nnoremap <Leader>sc :SyntasticCheck<CR>
+nnoremap <Leader>sr :SyntasticReset<CR>
+
+let python_highlight_all=1
+
+"Spaces, not tabs
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set expandtab
+autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
+
+set directory^=$HOME/.vim/swap//
 set nu
+set hlsearch
+syntax on
