@@ -2,8 +2,9 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 let api_root = "~/projects/"
+
 "cd
-execute "cd ".api_root
+exec "cd ".api_root
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -87,7 +88,7 @@ nnoremap <Leader>h :nohl<CR>
 
 " change to current file directory
 map <Leader>w :cd %:h<CR>
-execute "map <Leader>wa :cd ".api_root."<CR>"
+exec "map <Leader>wr :cd ".api_root."<CR>"
 
 " Show hidden characters (spaces, tabs, etc)
 nmap <silent> <leader>s :set nolist!<CR>
@@ -160,6 +161,17 @@ let g:syntastic_mode_map = {
             \ "passive_filetypes": ["python"] }
 nnoremap <Leader>sc :SyntasticCheck<CR>
 nnoremap <Leader>sr :SyntasticReset<CR>
+
+" copilot
+let g:copilot_filetypes = {
+            \ 'gitcommit': v:true,
+            \'markdown': v:true, 
+            \'yaml': v:true
+            \ }
+inoremap <Leader>] <Plug>(copilot-next)
+inoremap <Leader>[ <Plug>(copilot-previous)
+inoremap <Leader>\ <Plug>(copilot-suggest)
+
 
 let python_highlight_all=1
 
